@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
+from funcs import write_json, read_json
 import json
-import funcs
 import os
 
 app = Flask(__name__)
@@ -8,9 +8,9 @@ app = Flask(__name__)
 developers = []
 os.chdir(r".")
 if "data.json" not in os.listdir():
-    funcs.write_json(developers)
+    write_json(developers)
 else:
-    developers = funcs.read_json()
+    developers = read_json()
 
 
 @app.route("/dev", methods=["GET"])
@@ -27,17 +27,17 @@ def developer(did):
             return "Developer ID not found."
     elif request.method == "PUT":
         developers.append(json.loads(request.data))
-        return funcs.write_json(developers)
+        return write_json(developers)
     elif request.method == "PATCH":
         if 0 < did <= len(developers):
             developers[did - 1] = json.loads(request.data)
-            return funcs.write_json(developers)
+            return write_json(developers)
         else:
             return "Developer ID not found."
     elif request.method == "DELETE":
         if 0 < did <= len(developers):
             developers.pop(did - 1)
-            return funcs.write_json(developers)
+            return write_json(developers)
         else:
             return "Developer ID not found."
 
